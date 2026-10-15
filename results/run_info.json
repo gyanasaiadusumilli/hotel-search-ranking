@@ -1,0 +1,16 @@
+{
+  "frac": 0.5,
+  "train_searches": 139518,
+  "val_searches": 19931,
+  "test_searches": 39862,
+  "n_features": 44,
+  "lambdamart_trees": 494,
+  "train_period": [
+    "2012-11-01 00:08:29",
+    "2013-04-29 20:44:52"
+  ],
+  "test_period": [
+    "2013-05-21 20:31:03",
+    "2013-06-30 23:58:24"
+  ]
+}

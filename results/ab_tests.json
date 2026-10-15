@@ -1,0 +1,26 @@
+{
+  "lambdamart_vs_hotel_popularity": {
+    "mean_diff": 0.11862679601923241,
+    "ci95_low": 0.11488682115173182,
+    "ci95_high": 0.12207685891397344,
+    "relative_lift": 0.45266633886967605,
+    "p_value": 0.0005,
+    "n_searches": 39862
+  },
+  "lambdamart_vs_lgbm_pointwise": {
+    "mean_diff": 0.0034252285929517973,
+    "ci95_low": 0.0014548521505054143,
+    "ci95_high": 0.0054436023384015295,
+    "relative_lift": 0.009079131624940787,
+    "p_value": 0.001,
+    "n_searches": 39862
+  },
+  "lambdamart_vs_expedia_order": {
+    "mean_diff": -0.0009630844734779866,
+    "ci95_low": -0.005689776902548471,
+    "ci95_high": 0.0037393248246596397,
+    "relative_lift": -0.002392782665248072,
+    "p_value": 0.689,
+    "n_searches": 27954
+  }
+}

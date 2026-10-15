@@ -52,7 +52,43 @@ Columns only known after the search (`position`, `click_bool`, `booking_bool`, `
 
 ## Results
 
-*Full results on the real data will be added here after the training run.*
+Half of the searches were used (`--frac 0.5`): **139,518 training searches** (Nov 2012 – Apr 2013), 19,931 for validation and **39,862 test searches** from the following weeks (May 21 – Jun 30, 2013). 44 features; LambdaMART stopped at 494 trees.
+
+![Model comparison](results/comparison_ndcg.png)
+
+| Ranker | NDCG@5 | NDCG@10 | NDCG@38 | Booked hotel in top 5 |
+|---|---|---|---|---|
+| Random order | 0.159 | 0.230 | 0.351 | 26.6% |
+| Best reviews first | 0.163 | 0.237 | 0.354 | 28.4% |
+| Highest stars first | 0.190 | 0.266 | 0.374 | 32.0% |
+| Cheapest first | 0.205 | 0.277 | 0.384 | 33.1% |
+| Best location first | 0.229 | 0.299 | 0.400 | 37.5% |
+| Most booked hotels first | 0.262 | 0.331 | 0.423 | 42.4% |
+| Logistic regression (pointwise) | 0.342 | 0.409 | 0.478 | 54.2% |
+| LightGBM classifier (pointwise) | 0.377 | 0.443 | 0.504 | 58.7% |
+| **LambdaMART** | **0.381** | **0.446** | **0.506** | **58.8%** |
+
+Full results, including the random-order and Expedia-ordered subsets, are in [`results/comparison.md`](results/comparison.md).
+
+### Offline A/B tests (NDCG@5, paired bootstrap over test searches)
+
+| Comparison | Difference | 95% CI | p-value |
+|---|---|---|---|
+| LambdaMART vs. most-booked-first rule | **+0.119 (+45%)** | +0.115 to +0.122 | < 0.001 |
+| LambdaMART vs. pointwise LightGBM | **+0.003 (+0.9%)** | +0.001 to +0.005 | 0.001 |
+| LambdaMART vs. Expedia's own ranking (27,954 searches) | −0.001 (−0.2%) | −0.006 to +0.004 | 0.69 (no significant difference) |
+
+### What the results show
+
+- **Learning to rank beats every rule.** LambdaMART puts the booked hotel in the top 5 for 58.8% of booking searches, against 42.4% for the best rule (most-booked hotels first) and 26.6% for random order.
+- **Listwise beats pointwise, but only slightly.** Optimizing NDCG directly gives a small (+0.9%) but statistically significant gain over a classifier trained on the same features. Most of the gain comes from the features, not the loss function.
+- **It matches Expedia's production ranking.** On searches Expedia ranked itself, there is no significant difference between LambdaMART and Expedia's order (p = 0.69). This comparison favours Expedia: clicks are biased toward the positions Expedia chose.
+- **Holding up without position bias.** On the random-order searches, where position bias is absent, LambdaMART is still the best model (NDCG@5 0.332 vs. 0.326 pointwise and 0.238 for the best rule).
+- **What drives bookings:** the hotel's location desirability score, whether today's price is below the hotel's usual price, and the hotel's historical click rate are the top three features. Relative features (price z-score and rank within the results list) outrank raw price.
+
+![Feature importance](results/feature_importance.png)
+
+These are single runs with one seed on half of the data.
 
 ## Project structure
 
